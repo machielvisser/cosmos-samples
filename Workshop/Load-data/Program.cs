@@ -28,7 +28,9 @@ try
         .Faker<Post>()
         .RuleFor(o => o.id, f => Guid.NewGuid())
         .RuleFor(o => o.userId, f => f.PickRandom(users).id)
+        .RuleFor(o => o.title, f => lorem.Sentence())
         .RuleFor(o => o.content, f => lorem.Paragraphs(5))
+        .RuleFor(o => o.creationDate, f => DateTime.UtcNow)
         .Generate(500);
     await InsertData(postsContainer, posts, post => post.id.ToString());
 
@@ -38,6 +40,7 @@ try
         .RuleFor(o => o.userId, f => f.PickRandom(users).id)
         .RuleFor(o => o.postId, f => f.PickRandom(posts).id)
         .RuleFor(o => o.content, f => lorem.Paragraphs(1))
+        .RuleFor(o => o.creationDate, f => DateTime.UtcNow)
         .Generate(2000);
     await InsertData(postsContainer, comments, comment => comment.postId.ToString());
 
@@ -46,6 +49,7 @@ try
         .RuleFor(o => o.id, f => Guid.NewGuid())
         .RuleFor(o => o.userId, f => f.PickRandom(users).id)
         .RuleFor(o => o.postId, f => f.PickRandom(posts).id)
+        .RuleFor(o => o.creationDate, f => DateTime.UtcNow)
         .Generate(5000);
     await InsertData(postsContainer, likes, like => like.postId.ToString());
 }

@@ -21,6 +21,7 @@ public class Post : SharesContainer
     public Guid id { get; set; }
     public Guid userId { get; set; }
     public Guid postId { get => id; }
+    public string title { get; set; }
     public string content { get; set; }
     public DateTime creationDate { get; set; }
 }
