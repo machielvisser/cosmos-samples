@@ -348,3 +348,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/Workshop/Load-data/secrets.json
+/Workshop/Measure/secrets.json

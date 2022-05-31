@@ -1,13 +1,23 @@
 ﻿using Microsoft.Azure.Cosmos;
-using Shared;
+using Microsoft.Extensions.Configuration;
+using Shared.Settings;
 
 try
 {
+    var settings = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile("secrets.json", true)
+        .AddUserSecrets<Program>()
+        .Build()
+        .GetSection(nameof(Cosmos))
+        .Get<Cosmos>();
+
     // Connection
-    var cosmosClient = new CosmosClient(Settings.EndpointUrl, Settings.AuthorizationKey, new CosmosClientOptions() { AllowBulkExecution = true });
+    var cosmosClient = new CosmosClient(settings.EndpointUrl, settings.AuthorizationKey, new CosmosClientOptions() { AllowBulkExecution = true });
 
     // Create database
-    var database = (await cosmosClient.CreateDatabaseIfNotExistsAsync(Settings.DatabaseName)).Database;
+    var database = (await cosmosClient.CreateDatabaseIfNotExistsAsync(settings.DatabaseName)).Database;
 
 
     // Create containers (index configuration: https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.cosmos.database.definecontainer?view=azure-dotnet)

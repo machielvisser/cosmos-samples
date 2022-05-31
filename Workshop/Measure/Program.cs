@@ -1,14 +1,25 @@
 ﻿using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Configuration;
 using Shared;
+using Shared.Settings;
 using System.Diagnostics;
 
 try
 {
+    var settings = new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile("secrets.json", true)
+        .AddUserSecrets<Program>()
+        .Build()
+        .GetSection(nameof(Cosmos))
+        .Get<Cosmos>();
+
     // Connection
-    var cosmosClient = new CosmosClient(Settings.EndpointUrl, Settings.AuthorizationKey, new CosmosClientOptions() { AllowBulkExecution = true });
+    var cosmosClient = new CosmosClient(settings.EndpointUrl, settings.AuthorizationKey, new CosmosClientOptions() { AllowBulkExecution = true });
 
     // Get database and container references
-    var database = cosmosClient.GetDatabase(Settings.DatabaseName);
+    var database = cosmosClient.GetDatabase(settings.DatabaseName);
     var usersContainer = database.GetContainer("users");
     var postsContainer = database.GetContainer("posts");
 
